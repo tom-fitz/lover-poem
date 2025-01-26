@@ -13,17 +13,17 @@ console.log({'answers': {
     "4": "figure out the rest of the puzzle"
 }})
 
-function getCountdown(): string {
+function getCountdown(): {days: number, hours: number, minutes: number, seconds: number} {
   const march1st2025 = new Date('2025-03-01T00:00:00').getTime()
   const now = new Date().getTime()
   const distance = march1st2025 - now
 
-  const days = Math.floor(distance / (1000 * 60 * 60 * 24))
-  const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-  const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
-  const seconds = Math.floor((distance % (1000 * 60)) / 1000)
-
-  return `${days}d ${hours}h ${minutes}m ${seconds}s`
+  return {
+    days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+    hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+    minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+    seconds: Math.floor((distance % (1000 * 60)) / 1000)
+  }
 }
 
 export function PuzzleContent() {
@@ -32,7 +32,12 @@ export function PuzzleContent() {
   const [activeTooltip, setActiveTooltip] = useState<number | null>(null)
   const [currentGuess, setCurrentGuess] = useState('')
   const [message, setMessage] = useState('')
-  const [countdown, setCountdown] = useState('')
+  const [countdown, setCountdown] = useState<{
+    days: number,
+    hours: number,
+    minutes: number,
+    seconds: number
+  }>({ days: 0, hours: 0, minutes: 0, seconds: 0 })
 
   useEffect(() => {
     const saved = loadPuzzleState()
@@ -140,8 +145,8 @@ export function PuzzleContent() {
       p-4">
       {isComplete && (
         <div className={styles.completionMessage}>
-          <p>You're soooooo smart Lover!!!</p>
-          <p>❤️❤️❤️{countdown}❤️❤️❤️</p>
+          <p>{"You're soooooo smart Lover!!!"}</p>
+          <p>❤️❤️❤️ {countdown.days}d {countdown.hours}h {countdown.minutes}m {countdown.seconds}s ❤️❤️❤️</p>
         </div>
       )}
       <div className="h-full flex flex-col justify-center">
